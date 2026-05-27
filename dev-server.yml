@@ -1,0 +1,68 @@
+#cloud-config
+
+# environment configuration
+environment:
+  DEBIAN_FRONTEND: noninteractive
+
+# repositories
+apt:
+  preserve_sources_list: true
+
+# required packages
+packages:
+  # core dependencies
+  - ca-certificates
+  - curl
+  - unzip
+  - gnupg
+  - sudo
+  - passwd
+  - zsh
+  - lsb-release
+  - locales
+  - git
+
+# skeleton files for user config (unused)
+write_files:
+  - path: /etc/skel/.zshenv
+    owner: root:root
+    permissions: '0644'
+    content: |
+      # core locale and term environment configurations
+      export TERM='wezterm'
+      export LANG='en_US.UTF-8'
+      export LC_ALL='en_US.UTF-8'
+
+# user provisioning
+users:
+  - name: player1
+    uid: 1001
+    shell: /bin/zsh
+    groups: sudo
+    sudo: ALL=(ALL) NOPASSWD:ALL
+  - name: player2
+    uid: 1002
+    shell: /bin/zsh
+    groups: sudo
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+# setup commands
+runcmd:
+  # compile the system locale data
+  - locale-gen en_US.UTF-8
+  - update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
+  # WezTerm terminfo entry
+  - curl -fsSL -o /tmp/wezterm.info https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo
+  - tic -x -o /usr/share/terminfo /tmp/wezterm.info
+  - rm -f /tmp/wezterm.info
+
+  # install Tailscale
+  - mkdir -p /usr/share/keyrings
+  - curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/questing.noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+  - curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/questing.tailscale-keyring.list | tee /etc/apt/sources.list.d/tailscale.list >/dev/null
+  - apt-get update
+  - apt-get install -y --no-install-recommends tailscale
+
+  # enable tailscaled service
+  - systemctl enable --now tailscaled
