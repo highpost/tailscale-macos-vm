@@ -77,7 +77,7 @@ Once Tailscale SSH is setup correctly, it's simple to use `git` remotely. Let's
 assume that we have a `git` repo on `dev-server`. We can simply clone it directly without any extra authentication:
 
 ```
-git clone player1@dev-server:~/my-proj
+git clone https://github.com/player1/my_proj
 ```
 
 ---
