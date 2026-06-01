@@ -8,6 +8,8 @@ OrbStack first spins up a temporary VM instance which allows `cloud-init` to pul
 
 This example also demonstrates a macOS-specific method for securely storing your Tailscale auth key in Apple Keychain. Due to macOS security sandbox restrictions, the guest VM cannot directly execute `security find-generic-password` to pull secrets from the host. Instead, the credential must be injected from the host macOS environment during provisioning, as shown in `run.sh`.
 
+NB: Apple's Security Framework is designed around an interactive desktop login session. Remote SSH sessions are not the same as local GUI login sessions, so they don't usually have access to the user's unlocked login keychain. In practice, this means you can't remotely run the `run.sh` script to create an OrbStack VM.
+
 ## Modify access controls
 
 Before launching the VM, configure your Tailscale Access Control Lists (ACLs) to handle the automated registration and permissions.
