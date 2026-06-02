@@ -20,6 +20,12 @@ In a scenario where you're trying to use a Mac mini as a server hosting OrbStack
 
 But this can also lead to confusion about what macOS DNS can resolve. The easiest workaround is to use Tailscale DNS for name resolution and add a specific entry to your SSH config file for your VM.
 
+```
+Host dev-server
+    HostName w.x.y.z
+    User player1
+```
+
 ## Modify access controls
 
 Before launching the VM, configure your Tailscale Access Control Lists (ACLs) to handle the automated registration and permissions.
