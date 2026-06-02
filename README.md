@@ -36,12 +36,31 @@ Go to [Access controls > Tags](https://login.tailscale.com/admin/acls/visual/tag
 Go to [**Access controls > Tailscale SSH**](https://login.tailscale.com/admin/acls/visual/tailscale-ssh/) and ensure your policy permits access to the tagged servers and specified users:
 
 ```json
-{
-  "action": "accept",
-  "src": ["autogroup:admin"],
-  "dst": ["tag:myservers"],
-  "users": ["player1", "player2"]
-}
+"ssh": [
+	// Any tailnet member (autogroup:member) can SSH as a non-root user
+	// to their own devices (autogroup:self).
+	{
+		"src":    ["autogroup:member"],
+		"dst":    ["autogroup:self"],
+		"users":  ["autogroup:nonroot", "player1", "player2"],
+		"action": "accept",
+	},
+	// Any tailnet member (autogroup:member) can SSH as a non-root user
+	// to any device tagged with myservers.
+	{
+		"src":    ["autogroup:member"],
+		"dst":    ["tag:myservers"],
+		"users":  ["autogroup:nonroot", "player1", "player2"],
+		"action": "accept",
+	},
+	// Allow tagged servers to SSH into other tagged servers.
+	{
+		"src":    ["tag:myservers"],
+		"dst":    ["tag:myservers"],
+		"users":  ["autogroup:nonroot", "player1", "player2"],
+		"action": "accept",
+	},
+],
 ```
 
 * Add your new tag (`"myservers"`) to the **Destination** (`dst`) array.
