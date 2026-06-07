@@ -3,6 +3,10 @@
 # Copy a Tailscale auth key from the system clipboard to Apple Keychain.
 # https://login.tailscale.com/admin/settings/keys
 #
+# NB: Due to constraints imposed by Apple's Security Framework, this script
+#     must be run directly from a Mac-based terminal and not remotely through
+#     SSH.
+#
 # NB: The Tailscale auth key will not appear in the Passwords app.
 #     Instead use Keychain Access through Spotlight.
 
